@@ -3,8 +3,10 @@ import HomePage from "./pages/HomePage/HomePage"
 import SeatsPage from "./pages/SeatsPage/SeatsPage"
 import SessionsPage from "./pages/SessionsPage/SessionsPage"
 import SuccessPage from "./pages/SuccessPage/SuccessPage"
-
+import axios from 'axios';
 export default function App() {
+    axios.defaults.headers.common['Authorization'] = 'vguSnKykv6ny986srnfBfOBd';
+
     return (
         <>
            <NavContainer>CINEFLEX</NavContainer>
