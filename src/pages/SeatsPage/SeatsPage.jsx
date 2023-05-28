@@ -8,9 +8,10 @@ export default function SeatsPage() {
     let [seats, setSeats] = useState([]);
     let [available, setAvailable] = useState(true);
     const [selected, setSelected] = useState(false);
+    const [selectSeat, setselectSeat] = useState([]);
 
     const params = useParams();
-    console.log(params);
+    
 
     useEffect(() => {
         const request = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${params.idSessao}/seats`)
@@ -21,11 +22,28 @@ export default function SeatsPage() {
 
     }, [])
 
-    function handleSeatSelection(){
-        setSelected(!selected);
-      };
+    function selectSeats(seat) {
+        console.log(selectSeat);
+        if(selectSeat.includes(seat) ) {
+            
+            seat.selected = false;
+            const arr = selectSeat.filter(seat => seat.selected === true)
+            console.log(arr)
+            setselectSeat(arr)
+            return seat.isAvailable = true
+        }
+        if (seat.isAvailable === false) {
+            return alert("Esse assento não está disponível")
+        }
+        if (seat.isAvailable) {
+            seat.selected = true;
+            console.log(seat.selected);
+            const arr = [...selectSeat, seat.id];
+            setselectSeat(arr)
+        }
+    }
 
-    
+
 
     return (
         <PageContainer>
@@ -33,28 +51,28 @@ export default function SeatsPage() {
 
             <SeatsContainer>
                 {seats.map((seat, index) => (
-                    <SeatItem 
-                    onClick={handleSeatSelection}
-                    key={seat.id}
-                    selected={selected}
-                    available={seat.isAvailable}
+                    <SeatItem
+                        key={seat.id}
+                        onClick={() => selectSeats(seat)}
+                        selected={seat.selected}
+                        available={seat.isAvailable}
                     >
                         {seats[index].name}
                     </SeatItem>
                 ))}
             </SeatsContainer>
 
-            <CaptionContainer>  
+            <CaptionContainer>
                 <CaptionItem>
-                    <CaptionCircle/>
+                    <CaptionCircle />
                     Selecionado
                 </CaptionItem>
                 <CaptionItem>
-                    <CaptionCircle available={true}/>
+                    <CaptionCircle available={true} />
                     Disponível
                 </CaptionItem>
                 <CaptionItem>
-                    <CaptionCircle available={false}/>
+                    <CaptionCircle available={false} />
                     Indisponível
                 </CaptionItem>
             </CaptionContainer>
