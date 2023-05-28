@@ -1,21 +1,25 @@
 import styled from "styled-components"
-import { useParams, Link } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 export default function SeatsPage() {
 
+    let [session, setSession] = useState([]);
     let [seats, setSeats] = useState([]);
     let [selectSeat, setSelectedSeat] = useState([]);
+    let [name, setName] = useState('')
+    let [cpf, setCpf] = useState('')
 
     const params = useParams();
-
+    const navigate = useNavigate();
 
     useEffect(() => {
         const request = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${params.idSessao}/seats`)
         request.then(response => {
             console.log(response.data.seats);
             setSeats(response.data.seats);
+            setSession(response.data);
         })
 
     }, [])
@@ -39,6 +43,20 @@ export default function SeatsPage() {
             const arr = [...selectSeat, seat.id];
             setSelectedSeat(arr)
         }
+    }
+
+        function confirm(e) {
+        e.preventDefault();
+
+        const request = {ids: selectSeat, name: name, cpf: cpf}
+        console.log(request)
+
+        const URL = 'https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many'
+
+        const promise = axios.post(URL, request)
+
+        promise.then( answer => {navigate('/sucesso', { state: {request, session} })})
+        promise.catch(error => error.data)
     }
 
 
@@ -76,13 +94,29 @@ export default function SeatsPage() {
             </CaptionContainer>
 
             <FormContainer>
+                <form onSubmit={confirm} >
                 <label htmlFor="name">Nome do Comprador:</label>
-                <input placeholder="Digite seu nome..." type="text" required id="name" />
+                <input 
+                placeholder="Digite seu nome..." 
+                type="text" 
+                required 
+                id="name" 
+                value={name} 
+                onChange={(e) => setName(e.target.value)}
+                />
+
 
                 <label htmlFor="cpf">CPF do Comprador:</label>
-                <input placeholder="Digite seu CPF..." type="text" required id="cpf" />
-
-                <button>Reservar Assento(s)</button>
+                <input 
+                placeholder="Digite seu CPF..." 
+                type="text" 
+                required 
+                id="cpf" 
+                value={cpf} 
+                onChange={(e) => setCpf(e.target.value)}
+                />
+                <button type="submit">Reservar Assento(s)</button>
+                </form>
             </FormContainer>
 
             <FooterContainer>

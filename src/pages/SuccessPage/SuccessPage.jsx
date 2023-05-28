@@ -1,31 +1,42 @@
 import styled from "styled-components"
+import { useLocation } from "react-router-dom"
+import { Link } from "react-router-dom"
+import { useState } from "react";
+
 
 export default function SuccessPage() {
+    const info = useLocation().state;
 
+    const [seats, setSeats] = useState(info.session.seats.filter(seat => (
+        seat.selected === true
+    )));
+    console.log(seats);
+    console.log(info);
     return (
         <PageContainer>
             <h1>Pedido feito <br /> com sucesso!</h1>
 
             <TextContainer>
                 <strong><p>Filme e sessão</p></strong>
-                <p>Tudo em todo lugar ao mesmo tempo</p>
-                <p>03/03/2023 - 14:00</p>
+                <p>{info.session.movie.title}</p>
+                <p>{info.session.day.date} - {info.session.name}</p>
             </TextContainer>
 
             <TextContainer>
                 <strong><p>Ingressos</p></strong>
-                <p>Assento 01</p>
-                <p>Assento 02</p>
-                <p>Assento 03</p>
+                {seats.map((seat) => (
+                    <p key={seat.id}>Assento {seat.name}</p>
+                ))}
             </TextContainer>
 
             <TextContainer>
                 <strong><p>Comprador</p></strong>
-                <p>Nome: Letícia Chijo</p>
-                <p>CPF: 123.456.789-10</p>
+                <p>Nome: {info.request.name}</p>
+                <p>CPF: {info.request.cpf}</p>
             </TextContainer>
-
-            <button>Voltar para Home</button>
+            <Link to='/'>
+                <button>Voltar para Home</button>
+            </Link>
         </PageContainer>
     )
 }
@@ -44,7 +55,18 @@ const PageContainer = styled.div`
         text-decoration: none;
     }
     button {
+        font-family: 'Roboto';  
+        font-style: normal;
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 21px;
+        color: white;
         margin-top: 50px;
+        background: #E8833A;
+        border-radius: 3px;
+        width: 225px;
+        height: 42px;
+        border: 0px;
     }
     h1 {
         font-family: 'Roboto';
