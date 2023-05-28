@@ -7,7 +7,7 @@ export default function SeatsPage() {
 
     let [seats, setSeats] = useState([]);
     let [available, setAvailable] = useState(true);
-    let [selected, setSelected] = useState(false);
+    const [selected, setSelected] = useState(false);
 
     const params = useParams();
     console.log(params);
@@ -21,9 +21,11 @@ export default function SeatsPage() {
 
     }, [])
 
-    function select(i){
-        setSelected(true)
-    }
+    function handleSeatSelection(){
+        setSelected(!selected);
+      };
+
+    
 
     return (
         <PageContainer>
@@ -32,7 +34,7 @@ export default function SeatsPage() {
             <SeatsContainer>
                 {seats.map((seat, index) => (
                     <SeatItem 
-                    onClick={()=>select(index)}
+                    onClick={handleSeatSelection}
                     key={seat.id}
                     selected={selected}
                     available={seat.isAvailable}
