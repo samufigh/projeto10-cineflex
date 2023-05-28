@@ -134,7 +134,7 @@ export default function SeatsPage() {
                     <img src={`${session.movie.posterURL}`} alt="poster" />
                 </div>
                 <div>
-                    <p>{session.movie.title} - {session.name}</p>
+                    <p>{session.movie.title} <br />{session.day.weekday} - {session.name}</p>
                 </div>
             </FooterContainer>
 
