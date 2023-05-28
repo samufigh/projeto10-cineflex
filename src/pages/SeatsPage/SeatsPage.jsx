@@ -6,12 +6,10 @@ import axios from 'axios'
 export default function SeatsPage() {
 
     let [seats, setSeats] = useState([]);
-    let [available, setAvailable] = useState(true);
-    const [selected, setSelected] = useState(false);
-    const [selectSeat, setselectSeat] = useState([]);
+    let [selectSeat, setSelectedSeat] = useState([]);
 
     const params = useParams();
-    
+
 
     useEffect(() => {
         const request = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${params.idSessao}/seats`)
@@ -24,13 +22,13 @@ export default function SeatsPage() {
 
     function selectSeats(seat) {
         console.log(selectSeat);
-        if(selectSeat.includes(seat) ) {
-            
+        if (selectSeat.includes(seat.id)) {
             seat.selected = false;
-            const arr = selectSeat.filter(seat => seat.selected === true)
-            console.log(arr)
-            setselectSeat(arr)
-            return seat.isAvailable = true
+            console.log(seat.selected);
+            const arr = selectSeat.filter(seat => seat.selected === true);
+            console.log(arr);
+            setSelectedSeat(arr);
+            return seat.isAvailable = true;
         }
         if (seat.isAvailable === false) {
             return alert("Esse assento não está disponível")
@@ -39,7 +37,7 @@ export default function SeatsPage() {
             seat.selected = true;
             console.log(seat.selected);
             const arr = [...selectSeat, seat.id];
-            setselectSeat(arr)
+            setSelectedSeat(arr)
         }
     }
 
@@ -64,7 +62,7 @@ export default function SeatsPage() {
 
             <CaptionContainer>
                 <CaptionItem>
-                    <CaptionCircle />
+                    <CaptionCircle selected={true} />
                     Selecionado
                 </CaptionItem>
                 <CaptionItem>
@@ -78,11 +76,11 @@ export default function SeatsPage() {
             </CaptionContainer>
 
             <FormContainer>
-                Nome do Comprador:
-                <input placeholder="Digite seu nome..." />
+                <label htmlFor="name">Nome do Comprador:</label>
+                <input placeholder="Digite seu nome..." type="text" required id="name" />
 
-                CPF do Comprador:
-                <input placeholder="Digite seu CPF..." />
+                <label htmlFor="cpf">CPF do Comprador:</label>
+                <input placeholder="Digite seu CPF..." type="text" required id="cpf" />
 
                 <button>Reservar Assento(s)</button>
             </FormContainer>
@@ -123,6 +121,7 @@ const SeatsContainer = styled.div`
     margin-top: 20px;
 `
 const FormContainer = styled.div`
+
     width: calc(100vw - 40px); 
     display: flex;
     flex-direction: column;
@@ -144,9 +143,25 @@ const FormContainer = styled.div`
         border: 0px;
         margin-top: 57px;
     }
-    input {
-        width: calc(100vw - 60px);
+    label{
+        margin-top: 10px;
+        margin-bottom: 5px;
     }
+    input {
+        background: #FFFFFF;
+        border: 1px solid #D5D5D5;
+        border-radius: 3px;
+        width: 327px;
+        height: 51px;
+        width: calc(100vw - 60px);
+        ::placeholder{
+          font-family: 'Roboto';
+            font-style: italic;
+            font-weight: 400;
+            font-size: 18px;
+            line-height: 21px;
+        }
+    }   
 `
 const CaptionContainer = styled.div`
     display: flex;
@@ -156,8 +171,8 @@ const CaptionContainer = styled.div`
     margin: 20px;
 `
 const CaptionCircle = styled.div`
-    border: 1px solid ${props => props.available ? '#7B8B99' : '#F7C52B'};         // Essa cor deve mudar
-    background-color: ${props => props.available ? '#C3CFD9' : '#FBE192'};         // Essa cor deve mudar       
+    border: 1px solid ${props => props.selected ? '#0E7D71' : props.available ? '#7B8B99' : '#F7C52B'};         // Essa cor deve mudar
+    background-color: ${props => props.selected ? '#1AAE9E' : props.available ? '#C3CFD9' : '#FBE192'};         // Essa cor deve mudar     
     height: 25px;
     width: 25px;
     border-radius: 25px;
