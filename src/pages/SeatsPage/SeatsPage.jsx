@@ -68,6 +68,7 @@ export default function SeatsPage() {
             <SeatsContainer>
                 {seats.map((seat, index) => (
                     <SeatItem
+                        data-test='seat'
                         key={seat.id}
                         onClick={() => selectSeats(seat)}
                         selected={seat.selected}
@@ -102,6 +103,7 @@ export default function SeatsPage() {
                 required 
                 id="name" 
                 value={name} 
+                data-test='client-name'
                 onChange={(e) => setName(e.target.value)}
                 />
 
@@ -113,13 +115,16 @@ export default function SeatsPage() {
                 required 
                 id="cpf" 
                 value={cpf} 
+                data-test='client-cpf'
                 onChange={(e) => setCpf(e.target.value)}
                 />
-                <button type="submit">Reservar Assento(s)</button>
+                <button 
+                data-test='book-seat-btn'
+                type="submit">Reservar Assento(s)</button>
                 </form>
             </FormContainer>
 
-            <FooterContainer>
+            <FooterContainer data-test='footer'>
                 <div>
                     <img src={"https://br.web.img2.acsta.net/pictures/22/05/16/17/59/5165498.jpg"} alt="poster" />
                 </div>

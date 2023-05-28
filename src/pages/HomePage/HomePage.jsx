@@ -27,7 +27,7 @@ export default function HomePage() {
                     <Link 
                     key={movie.id}
                     to={`/sessoes/${movie.id}`}>
-                    <MovieContainer>
+                    <MovieContainer data-test='movie'>
                         <img src={`${movie.posterURL}`}/>
                     </MovieContainer>
                     </Link>
