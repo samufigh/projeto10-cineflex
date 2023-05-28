@@ -1,30 +1,58 @@
 import styled from "styled-components"
+import { useParams, Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 export default function SeatsPage() {
+
+    let [seats, setSeats] = useState([]);
+    let [available, setAvailable] = useState(true);
+    let [selected, setSelected] = useState(false);
+
+    const params = useParams();
+    console.log(params);
+
+    useEffect(() => {
+        const request = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${params.idSessao}/seats`)
+        request.then(response => {
+            console.log(response.data.seats);
+            setSeats(response.data.seats);
+        })
+
+    }, [])
+
+    function select(i){
+        setSelected(true)
+    }
 
     return (
         <PageContainer>
             Selecione o(s) assento(s)
 
             <SeatsContainer>
-                <SeatItem>01</SeatItem>
-                <SeatItem>02</SeatItem>
-                <SeatItem>03</SeatItem>
-                <SeatItem>04</SeatItem>
-                <SeatItem>05</SeatItem>
+                {seats.map((seat, index) => (
+                    <SeatItem 
+                    onClick={()=>select(index)}
+                    key={seat.id}
+                    selected={selected}
+                    available={seat.isAvailable}
+                    >
+                        {seats[index].name}
+                    </SeatItem>
+                ))}
             </SeatsContainer>
 
-            <CaptionContainer>
+            <CaptionContainer>  
                 <CaptionItem>
-                    <CaptionCircle />
+                    <CaptionCircle/>
                     Selecionado
                 </CaptionItem>
                 <CaptionItem>
-                    <CaptionCircle />
+                    <CaptionCircle available={true}/>
                     Disponível
                 </CaptionItem>
                 <CaptionItem>
-                    <CaptionCircle />
+                    <CaptionCircle available={false}/>
                     Indisponível
                 </CaptionItem>
             </CaptionContainer>
@@ -83,6 +111,18 @@ const FormContainer = styled.div`
     font-size: 18px;
     button {
         align-self: center;
+        width: 225px;
+        height: 42px;
+        background: #E8833A;
+        border-radius: 3px;
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 21px;
+        color: white;;
+        border: 0px;
+        margin-top: 57px;
     }
     input {
         width: calc(100vw - 60px);
@@ -96,8 +136,8 @@ const CaptionContainer = styled.div`
     margin: 20px;
 `
 const CaptionCircle = styled.div`
-    border: 1px solid blue;         // Essa cor deve mudar
-    background-color: lightblue;    // Essa cor deve mudar
+    border: 1px solid ${props => props.available ? '#7B8B99' : '#F7C52B'};         // Essa cor deve mudar
+    background-color: ${props => props.available ? '#C3CFD9' : '#FBE192'};         // Essa cor deve mudar       
     height: 25px;
     width: 25px;
     border-radius: 25px;
@@ -113,9 +153,10 @@ const CaptionItem = styled.div`
     font-size: 12px;
 `
 const SeatItem = styled.div`
-    border: 1px solid blue;         // Essa cor deve mudar
-    background-color: lightblue;    // Essa cor deve mudar
-    height: 25px;
+
+    border: 1px solid ${props => props.selected ? '#0E7D71' : props.available ? '#7B8B99' : '#F7C52B'};         // Essa cor deve mudar
+    background-color: ${props => props.selected ? '#1AAE9E' : props.available ? '#C3CFD9' : '#FBE192'};         // Essa cor deve mudar
+    height: 25px; 
     width: 25px;
     border-radius: 25px;
     font-family: 'Roboto';
