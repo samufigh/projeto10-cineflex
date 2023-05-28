@@ -17,9 +17,9 @@ export default function SeatsPage() {
     useEffect(() => {
         const request = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${params.idSessao}/seats`)
         request.then(response => {
-            console.log(response.data.seats);
             setSeats(response.data.seats);
             setSession(response.data);
+            console.log(response.data)
         })
 
     }, [])
@@ -45,20 +45,25 @@ export default function SeatsPage() {
         }
     }
 
-        function confirm(e) {
+    function confirm(e) {
         e.preventDefault();
 
-        const request = {ids: selectSeat, name: name, cpf: cpf}
+        const request = { ids: selectSeat, name: name, cpf: cpf }
         console.log(request)
 
         const URL = 'https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many'
 
         const promise = axios.post(URL, request)
 
-        promise.then( answer => {navigate('/sucesso', { state: {request, session} })})
+        promise.then(answer => { navigate('/sucesso', { state: { request, session } }) })
         promise.catch(error => error.data)
     }
 
+    if(session.length===0){
+        return(<>
+            carregando...
+        </>)
+    }
 
 
     return (
@@ -96,41 +101,40 @@ export default function SeatsPage() {
 
             <FormContainer>
                 <form onSubmit={confirm} >
-                <label htmlFor="name">Nome do Comprador:</label>
-                <input 
-                placeholder="Digite seu nome..." 
-                type="text" 
-                required 
-                id="name" 
-                value={name} 
-                data-test='client-name'
-                onChange={(e) => setName(e.target.value)}
-                />
+                    <label htmlFor="name">Nome do Comprador:</label>
+                    <input
+                        placeholder="Digite seu nome..."
+                        type="text"
+                        required
+                        id="name"
+                        value={name}
+                        data-test='client-name'
+                        onChange={(e) => setName(e.target.value)}
+                    />
 
 
-                <label htmlFor="cpf">CPF do Comprador:</label>
-                <input 
-                placeholder="Digite seu CPF..." 
-                type="text" 
-                required 
-                id="cpf" 
-                value={cpf} 
-                data-test='client-cpf'
-                onChange={(e) => setCpf(e.target.value)}
-                />
-                <button 
-                data-test='book-seat-btn'
-                type="submit">Reservar Assento(s)</button>
+                    <label htmlFor="cpf">CPF do Comprador:</label>
+                    <input
+                        placeholder="Digite seu CPF..."
+                        type="text"
+                        required
+                        id="cpf"
+                        value={cpf}
+                        data-test='client-cpf'
+                        onChange={(e) => setCpf(e.target.value)}
+                    />
+                    <button
+                        data-test='book-seat-btn'
+                        type="submit">Reservar Assento(s)</button>
                 </form>
             </FormContainer>
 
             <FooterContainer data-test='footer'>
                 <div>
-                    <img src={"https://br.web.img2.acsta.net/pictures/22/05/16/17/59/5165498.jpg"} alt="poster" />
+                    <img src={`${session.movie.posterURL}`} alt="poster" />
                 </div>
                 <div>
-                    <p>Tudo em todo lugar ao mesmo tempo</p>
-                    <p>Sexta - 14h00</p>
+                    <p>{session.movie.title} - {session.name}</p>
                 </div>
             </FooterContainer>
 
