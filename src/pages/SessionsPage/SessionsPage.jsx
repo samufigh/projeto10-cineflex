@@ -35,7 +35,7 @@ export default function SessionsPage() {
                                 </Link>
 
                                 <Link to={`/assentos/${days[index].showtimes[1].id}`}>
-                                <button>{days[index].showtimes[1].name}</button>
+                                <button data-test='showtime'>{days[index].showtimes[1].name}</button>
                                 </Link>
                             </ButtonsContainer>
                         </div>
