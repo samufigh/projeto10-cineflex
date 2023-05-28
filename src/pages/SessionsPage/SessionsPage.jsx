@@ -1,42 +1,56 @@
 import styled from "styled-components"
+import { useParams, Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 export default function SessionsPage() {
+    const [movie, setMovie] = useState([]);
+    const [days, setDays] = useState([]);
+    const [times, setTimes] =  useState([]);
+
+    const params = useParams();
+
+    useEffect(() => {
+        const request = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/movies/${params.idFilme}/showtimes`)
+        request.then(response => {
+            setMovie(response.data);
+            setDays(response.data.days)
+            console.log(response.data.days);
+            setTimes(response.data.days.showtimes)
+            console.log(response.data.days[0].showtimes)
+        })
+    }, [])
 
     return (
         <PageContainer>
             Selecione o horário
             <div>
-                <SessionContainer>
-                    Sexta - 03/03/2023
-                    <ButtonsContainer>
-                        <button>14:00</button>
-                        <button>15:00</button>
-                    </ButtonsContainer>
-                </SessionContainer>
+                <SessionContainer key={days.id}>
+                    {days.map((day, index) => (
+                        <>
+                            <p>{days[index].weekday} - {days[index].date}</p>
+                            <ButtonsContainer>
+                                <Link to={`/assentos/${days[index].showtimes[0].id}`}>
+                                <button>{days[index].showtimes[0].name}</button>
+                                </Link>
 
-                <SessionContainer>
-                    Sexta - 03/03/2023
-                    <ButtonsContainer>
-                        <button>14:00</button>
-                        <button>15:00</button>
-                    </ButtonsContainer>
-                </SessionContainer>
+                                <Link to={`/assentos/${days[index].showtimes[1].id}`}>
+                                <button>{days[index].showtimes[1].name}</button>
+                                </Link>
+                            </ButtonsContainer>
+                        </>
+                    ))}
 
-                <SessionContainer>
-                    Sexta - 03/03/2023
-                    <ButtonsContainer>
-                        <button>14:00</button>
-                        <button>15:00</button>
-                    </ButtonsContainer>
+
                 </SessionContainer>
             </div>
 
             <FooterContainer>
                 <div>
-                    <img src={"https://br.web.img2.acsta.net/pictures/22/05/16/17/59/5165498.jpg"} alt="poster" />
+                    <img src={`${movie.posterURL}`} alt="poster" />
                 </div>
                 <div>
-                    <p>Tudo em todo lugar ao mesmo tempo</p>
+                    <p>{movie.title}</p>
                 </div>
             </FooterContainer>
 
@@ -71,8 +85,25 @@ const ButtonsContainer = styled.div`
     display: flex;
     flex-direction: row;
     margin: 20px 0;
+    
+    
     button {
-        margin-right: 20px;
+    margin-right: 20px;
+    width: 83px;
+    height: 43px;
+    background: #E8833A;
+    border-radius: 3px;
+    font-family: 'Roboto';
+    border: 0px;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 21px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.02em;
+    color: #FFFFFF;
     }
     a {
         text-decoration: none;
